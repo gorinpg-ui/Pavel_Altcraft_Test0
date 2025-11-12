@@ -1,83 +1,40 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тестовая HTML страница</title>
-    <script>
-        (function (window, document, dataLayerName, containerID) {
-            window[dataLayerName] = window[dataLayerName] || [];
-            window[dataLayerName].push({ 'start': new Date().getTime(), event: 'actm-js' });
-            var firstScript = document.getElementsByTagName('script')[0];
-            var script = document.createElement('script');
-            var dl = dataLayerName !== 'acDataLayer' ? '&l=' + dataLayerName : '';
-            script.async = true;
-            script.src = 'https://pxl.ru.altkraft.com/actm/js/actm.js?id=' + containerID + dl;
-            script.type = 'module';
-            if (firstScript && firstScript.parentNode) {
-                firstScript.parentNode.insertBefore(script, firstScript);
-            }
-        }(window, document, 'acDataLayer', 'ATM-73FBaBDiakioNyIjy'));
-</script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        .block {
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Регистрация</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-semibold mb-6 text-center">Регистрация</h1>
+    <form id="registerForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium mb-1">Электронная почта</label>
+        <input type="email" id="email" required class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Фамилия</label>
+        <input type="text" id="lastName" required class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Имя</label>
+        <input type="text" id="firstName" required class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div class="flex items-center">
+        <input type="checkbox" id="consent" required class="mr-2">
+        <label for="consent" class="text-sm">Согласен на обработку персональных данных</label>
+      </div>
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Зарегистрироваться</button>
+    </form>
+  </div>
 
-    <h1>Тестовая страница</h1>
-
-    <div class="block">
-        <h2>Текстовый блок</h2>
-        <p>Это пример текста для тестирования отображения абзацев, стилей и структуры страницы.</p>
-    </div>
-
-    <div class="block">
-        <h2>Ссылка</h2>
-        <a href="https://altcraft.com/" target="_blank">Перейти на altcraft.com</a>
-    </div>
-
-    <div class="block">
-        <h2>Кнопки</h2>
-        <button type="button" target="_blank" id="2">Обычная кнопка</button>
-        <input type="button" value="Кнопка input">
-    </div>
-
-    <div class="block">
-        <h2>Форма</h2>
-        <form target="_blank" class="form" id="1" action="#" method="post">
-            <label>Имя:
-                <input type="text" name="username" placeholder="Введите имя">
-            </label>
-            <br><br>
-            <label>Email:
-                <input type="email" name="email" placeholder="Введите email">
-            </label>
-            <br><br>
-            <label>Пароль:
-                <input type="password" name="password">
-            </label>
-            <br><br>
-            <label>
-                <input type="checkbox" name="agree"> Согласен с условиями
-            </label>
-            <br><br>
-            <label>Выбор из списка:
-                <select name="options">
-                    <option value="1">Опция 1</option>
-                    <option value="2">Опция 2</option>
-                    <option value="3">Опция 3</option>
-                </select>
-            </label>
-            <br><br>
-            <input type="submit" value="Отправить">
-        </form>
-    </div>
-
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      window.location.href = "callback.html";
+    });
+  </script>
 </body>
 </html>
