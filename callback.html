@@ -7,27 +7,47 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 flex items-center justify-center min-h-screen">
-  <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md space-y-6">
+  <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md space-y-8">
     <h1 class="text-2xl font-semibold text-center">Спасибо за регистрацию!</h1>
-    
-    <div class="text-center">
-      <a href="https://altcraft.com/" target="_blank" class="text-blue-600 hover:underline text-lg">Перейти к новостям</a>
+
+    <!-- Блок со ссылкой на новости -->
+    <div class="p-4 border border-gray-200 rounded-xl shadow-sm text-center">
+      <h2 class="text-lg font-medium mb-2">Новости</h2>
+      <a href="https://altcraft.com/" target="_blank"
+         class="text-blue-600 hover:underline text-base">
+         Перейти к новостям
+      </a>
     </div>
 
-    <form id="callbackForm" class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium mb-1">Номер телефона</label>
-        <input type="tel" id="phone" required placeholder="+7 (___) ___-__-__" 
-          class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">Отправить</button>
-    </form>
+    <!-- Блок с формой обратного звонка -->
+    <div id="callbackBlock" class="p-4 border border-gray-200 rounded-xl shadow-sm">
+      <h2 class="text-lg font-medium mb-3 text-center">Форма обратного звонка</h2>
+
+      <form id="callbackForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Номер телефона</label>
+          <input type="tel" id="phone" required placeholder="+7 (___) ___-__-__"
+            class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <button type="submit"
+          class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+          Отправить
+        </button>
+      </form>
+    </div>
   </div>
 
   <script>
     document.getElementById('callbackForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      alert("Спасибо! Мы скоро свяжемся с вами.");
+      const callbackBlock = document.getElementById('callbackBlock');
+      callbackBlock.innerHTML = `
+        <div class="text-center py-6">
+          <p class="text-lg font-medium text-green-700">
+            Спасибо, мы свяжемся с Вами в ближайшее время.
+          </p>
+        </div>
+      `;
     });
   </script>
 </body>
