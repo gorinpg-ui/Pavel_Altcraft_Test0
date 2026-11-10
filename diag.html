@@ -62,6 +62,7 @@
         <button id="b2">2. event + popup_allowed="true" (строка)</button>
         <button id="b3">3. только event, без флага (контроль)</button>
         <button id="b4">4. прочитать переменные МТ</button>
+        <button id="b5">5. показать попап напрямую (в обход МТ)</button>
     </p>
 
     <script>
@@ -96,6 +97,19 @@
                 try { log('var[' + k + '] = ' + JSON.stringify(v[k]())); }
                 catch (e) { log('var[' + k + '] ошибка: ' + e.message); }
             });
+        });
+        document.getElementById('b5').addEventListener('click', async function () {
+            try {
+                log('b5: импортирую popup-library.js');
+                var mod = await import('https://pxl.ru.altkraft.com/actm/js/popup-library.js');
+                var starter = new mod.Starter({ config: { pixel_domain: 'https://pxl.ru.altkraft.com' } });
+                var manager = starter.manager;
+                log('b5: manager готов, вызываю show');
+                await manager.run('show', 'AP-2R6ZPeRutpYHVk4GF', {});
+                log('b5: show() завершился');
+            } catch (e) {
+                log('b5 ошибка: ' + ((e && e.message) || String(e)));
+            }
         });
     </script>
 </body>
