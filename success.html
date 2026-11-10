@@ -23,6 +23,11 @@
         var BACKEND_URL = ''; // URL бэкенда, например 'http://localhost:8000/check'.
                               // Пусто = режим без бэкенда (флаг ставится сразу, для отладки попапа).
 
+        var TEST_PROFILE_ID = ''; // Тест матчинга без бэкенда: впишите реальный profile_id —
+                                  // страница отправит в МТ матчинг по нему, и платформа
+                                  // подставит в попап данные именно этого профиля.
+                                  // Пусто = обычный матчинг по телефону из URL.
+
         var params = new URLSearchParams(window.location.search);
         var phone = params.get('phone');
 
@@ -49,6 +54,16 @@
                     // allowed=false или профиля нет — ничего не пушим, попап не покажется
                 })
                 .catch(function (e) { console.error('Проверка сегмента не удалась:', e); });
+        } else if (TEST_PROFILE_ID) {
+            // Тест схемы матчинга: матчинг по заранее известному profile_id.
+            // Платформа резолвит профиль и подставляет его данные в попап.
+            acDataLayer.push({
+                matching: {
+                    matching_mode: 'profile_id',
+                    matching: { profile_id: TEST_PROFILE_ID }
+                }
+            });
+            acDataLayer.push({ event: 'segment_allowed', popup_allowed: true });
         } else {
             // Режим без бэкенда: матчинг по телефону из URL, флаг сразу
             if (phone) {
