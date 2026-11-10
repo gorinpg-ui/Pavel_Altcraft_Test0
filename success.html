@@ -18,6 +18,50 @@
             }
         }(window, document, 'acDataLayer', 'ATM-73FBaBDiakioNyIjy'));
     </script>
+    <script>
+        // ---- Проверка сегмента и передача данных в Менеджер тегов ----
+        var BACKEND_URL = ''; // URL бэкенда, например 'http://localhost:8000/check'.
+                              // Пусто = режим без бэкенда (флаг ставится сразу, для отладки попапа).
+
+        var params = new URLSearchParams(window.location.search);
+        var phone = params.get('phone');
+
+        if (BACKEND_URL && phone) {
+            // Рабочая схема: спрашиваем бэкенд, входит ли профиль в сегмент.
+            // Бэкенд делает два запроса в Altcraft API:
+            //   1) POST /api/v1.1/profiles/get/ {db_id, matching:'phone', phone} -> data.id
+            //   2) POST /api/v1.1/profiles/segstatic/list {id: <ID сегмента>} -> data[].profile_id
+            // и возвращает JSON: {allowed: true/false, profile_id: '...'}
+            fetch(BACKEND_URL + '?phone=' + encodeURIComponent(phone))
+                .then(function (r) { return r.json(); })
+                .then(function (res) {
+                    if (res.allowed) {
+                        // Матчинг по profile_id — попап подставит данные из этого профиля
+                        acDataLayer.push({
+                            matching: {
+                                matching_mode: 'profile_id',
+                                matching: { profile_id: res.profile_id }
+                            }
+                        });
+                        // Событие для триггера МТ: срабатывает ровно в момент подтверждения
+                        acDataLayer.push({ event: 'segment_allowed', popup_allowed: true });
+                    }
+                    // allowed=false или профиля нет — ничего не пушим, попап не покажется
+                })
+                .catch(function (e) { console.error('Проверка сегмента не удалась:', e); });
+        } else {
+            // Режим без бэкенда: матчинг по телефону из URL, флаг сразу
+            if (phone) {
+                acDataLayer.push({
+                    matching: {
+                        matching_mode: 'phone',
+                        matching: { phone: phone, db_ids: [1] } // db_ids — ID базы профилей, замените на свою
+                    }
+                });
+            }
+            acDataLayer.push({ event: 'segment_allowed', popup_allowed: true });
+        }
+    </script>
 </head>
 <body>
     <p>Рады, что вы зарегистрировались</p>
