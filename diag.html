@@ -4,6 +4,41 @@
     <meta charset="UTF-8">
     <title>Диагностика попапа</title>
     <script>
+        // ---- Зеркало консоли в DOM (устанавливается ДО загрузки actm.js) ----
+        (function () {
+            var buffer = [], max = 60, count = 0;
+            function format(args) {
+                return Array.prototype.map.call(args, function (a) {
+                    try { return typeof a === 'object' && a !== null ? JSON.stringify(a) : String(a); }
+                    catch (e) { return '[object]'; }
+                }).join(' ');
+            }
+            function flush() {
+                var el = document.getElementById('log');
+                if (!el) return;
+                el.textContent += buffer.join('');
+                buffer = [];
+            }
+            function add(prefix, args) {
+                if (count++ > max) return;
+                var line = prefix + ' ' + format(args) + '\n';
+                if (document.getElementById('log')) { buffer.push(line); flush(); }
+                else buffer.push(line);
+            }
+            ['error', 'warn', 'log'].forEach(function (m) {
+                var orig = console[m] ? console[m].bind(console) : function () {};
+                console[m] = function () { add('[' + m + ']', arguments); orig.apply(console, arguments); };
+            });
+            window.addEventListener('error', function (e) {
+                add('[window.error]', [e.message, (e.filename || '') + ':' + (e.lineno || '')]);
+            });
+            window.addEventListener('unhandledrejection', function (e) {
+                add('[unhandledrejection]', [String(e.reason)]);
+            });
+            document.addEventListener('DOMContentLoaded', flush);
+        })();
+    </script>
+    <script>
         (function (window, document, dataLayerName, containerID) {
             window[dataLayerName] = window[dataLayerName] || [];
             window[dataLayerName].push({ 'start': new Date().getTime(), event: 'actm-js' });
@@ -21,16 +56,17 @@
 </head>
 <body>
     <h1>Диагностика попапа</h1>
-    <p id="log">Лог:</p>
+    <pre id="log" style="background:#f4f4f4; padding:8px; max-height:260px; overflow:auto; white-space:pre-wrap; font-size:12px;"></pre>
     <p>
         <button id="b1">1. event + popup_allowed=true (булево)</button>
         <button id="b2">2. event + popup_allowed="true" (строка)</button>
         <button id="b3">3. только event, без флага (контроль)</button>
+        <button id="b4">4. прочитать переменные МТ</button>
     </p>
 
     <script>
         var log = function (msg) {
-            document.getElementById('log').textContent += ' ' + msg + ' |';
+            document.getElementById('log').textContent += '[page] ' + msg + '\n';
         };
 
         // Через 1.5 сек после загрузки — МТ уже точно инициализирован
@@ -52,6 +88,14 @@
         document.getElementById('b3').addEventListener('click', function () {
             acDataLayer.push({ event: 'segment_allowed' });
             log('click3 noflag');
+        });
+        document.getElementById('b4').addEventListener('click', function () {
+            var v = window.ac_tag_manager && window.ac_tag_manager.v;
+            if (!v) { log('ac_tag_manager.v недоступен'); return; }
+            Object.keys(v).forEach(function (k) {
+                try { log('var[' + k + '] = ' + JSON.stringify(v[k]())); }
+                catch (e) { log('var[' + k + '] ошибка: ' + e.message); }
+            });
         });
     </script>
 </body>
