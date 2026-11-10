@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Диагностика попапа</title>
+    <script>
+        (function (window, document, dataLayerName, containerID) {
+            window[dataLayerName] = window[dataLayerName] || [];
+            window[dataLayerName].push({ 'start': new Date().getTime(), event: 'actm-js' });
+            var firstScript = document.getElementsByTagName('script')[0];
+            var script = document.createElement('script');
+            var dl = dataLayerName !== 'acDataLayer' ? '&l=' + dataLayerName : '';
+            script.async = true;
+            script.src = 'https://pxl.ru.altkraft.com/actm/js/actm.js?id=' + containerID + dl;
+            script.type = 'module';
+            if (firstScript && firstScript.parentNode) {
+                firstScript.parentNode.insertBefore(script, firstScript);
+            }
+        }(window, document, 'acDataLayer', 'ATM-73FBaBDiakioNyIjy'));
+    </script>
+</head>
+<body>
+    <h1>Диагностика попапа</h1>
+    <p id="log">Лог:</p>
+    <p>
+        <button id="b1">1. event + popup_allowed=true (булево)</button>
+        <button id="b2">2. event + popup_allowed="true" (строка)</button>
+        <button id="b3">3. только event, без флага (контроль)</button>
+    </p>
+
+    <script>
+        var log = function (msg) {
+            document.getElementById('log').textContent += ' ' + msg + ' |';
+        };
+
+        // Через 1.5 сек после загрузки — МТ уже точно инициализирован
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                acDataLayer.push({ event: 'segment_allowed', popup_allowed: true });
+                log('AUTO-push(bool)@1.5s');
+            }, 1500);
+        });
+
+        document.getElementById('b1').addEventListener('click', function () {
+            acDataLayer.push({ event: 'segment_allowed', popup_allowed: true });
+            log('click1 bool');
+        });
+        document.getElementById('b2').addEventListener('click', function () {
+            acDataLayer.push({ event: 'segment_allowed', popup_allowed: 'true' });
+            log('click2 string');
+        });
+        document.getElementById('b3').addEventListener('click', function () {
+            acDataLayer.push({ event: 'segment_allowed' });
+            log('click3 noflag');
+        });
+    </script>
+</body>
+</html>
