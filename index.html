@@ -6,18 +6,46 @@
 </head>
 <body>
     <h1>Регистрация</h1>
-    <form action="success.html" method="get">
+    <form id="reg-form" action="success.html" method="get">
         <p>
             <label for="name">Имя:</label><br>
             <input type="text" id="name" name="name" required>
         </p>
         <p>
-            <label for="phone">Номер телефона:</label><br>
-            <input type="tel" id="phone" name="phone" required>
+            <label for="phone">Номер телефона (международный формат, например +79001234567):</label><br>
+            <input type="tel" id="phone" name="phone" placeholder="+79001234567" required>
+            <div id="phone-error" style="color: red; display: none;">
+                Введите номер в международном формате: плюс в начале и только цифры,
+                без пробелов, дефисов и скобок. Пример: +79001234567
+            </div>
         </p>
         <p>
             <button type="submit">Зарегистрироваться</button>
         </p>
     </form>
+
+    <script>
+        var phoneInput = document.getElementById('phone');
+        var phoneError = document.getElementById('phone-error');
+        var regForm = document.getElementById('reg-form');
+
+        // Разрешаем вводить только ведущий плюс и цифры —
+        // разделители и буквы в поле физически не попадут
+        phoneInput.addEventListener('input', function () {
+            var v = this.value;
+            this.value = (v.charAt(0) === '+' ? '+' : '') + v.replace(/[^0-9]/g, '');
+            phoneError.style.display = 'none';
+        });
+
+        // Проверка при отправке: международный формат (E.164) —
+        // именно его требует платформа для поля phones
+        regForm.addEventListener('submit', function (e) {
+            var ok = /^\+[1-9][0-9]{6,14}$/.test(phoneInput.value);
+            if (!ok) {
+                phoneError.style.display = 'block';
+                e.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>
