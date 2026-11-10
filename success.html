@@ -55,7 +55,12 @@
                 acDataLayer.push({
                     matching: {
                         matching_mode: 'phone',
-                        matching: { phone: phone, db_ids: [1] } // db_ids — ID базы профилей, замените на свою
+                        // db_ids НЕ указываем: платформа найдёт профиль по телефону во всех базах.
+                        // Неверный db_ids ломает показ попапа — /popup/env отвечает
+                        // "In the checked entity no common db's with matching", и тег молча не срабатывает.
+                        // Если понадобится ограничить поиск конкретной базой, укажите её реальный ID:
+                        // matching: { phone: phone, db_ids: [реальный_ID_базы] }
+                        matching: { phone: phone }
                     }
                 });
             }
